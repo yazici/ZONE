@@ -10,7 +10,6 @@ public class NetworkCallback : Bolt.GlobalEventListener
     {
        GameObject gameObject = BoltNetwork.Instantiate(BoltPrefabs.Player, new Vector3(0, 10, 0), Quaternion.identity);
      
-
     }
   
     

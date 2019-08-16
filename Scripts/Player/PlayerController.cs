@@ -54,6 +54,10 @@ public class PlayerController : Bolt.EntityBehaviour<IPlayerState>
         IsSliding();
     }
 
+    public override void Attached()
+    {
+        state.SetTransforms(state.transform, transform);
+    }
 
     public override void SimulateOwner()
     {
