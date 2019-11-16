@@ -6,13 +6,13 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class UnserializableGameManager : MonoBehaviour
+public class GameManager : MonoBehaviour
 {
     public enum GameState {Preload, Loading, Paused, Play, MainMenu}
     [Header("Loading")]
+    public bool loadingScreenVanishAfterLoad;
     [SerializeField] private List<string> sceneNames;
     [SerializeField] int sceneIndex;
-    [SerializeField] private bool loadingScreenVanishAfterLoad;
     [SerializeField] private GameObject loadingCanvas;
     [SerializeField] private Slider sunSlider;
 
@@ -43,7 +43,7 @@ public class UnserializableGameManager : MonoBehaviour
     {
         BinaryFormatter bf = new BinaryFormatter();
         FileStream file = File.Open(Application.persistentDataPath + "/gamesave.save", FileMode.Open);
-        SerializableGameManager serializableGameManager = (SerializableGameManager)bf.Deserialize(file);
+        SaveData serializableGameManager = (SaveData)bf.Deserialize(file);
         file.Close();
     }
 
