@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerController : Bolt.EntityBehaviour<IPlayerState>
+public class PlayerController : MonoBehaviour
 {
     [SerializeField] private float walkSpeed = 6.0f;
     [SerializeField] private float runSpeed = 11.0f;
@@ -31,17 +31,17 @@ public class PlayerController : Bolt.EntityBehaviour<IPlayerState>
     private Vector3 contactPoint;
     private bool playerControl = false;
     private bool sliding;
-    private GameManager gameManager;
+    private UnserializableGameManager gameManager;
 
 
     private void Start()
     {
-        gameManager = FindObjectOfType<GameManager>();
+        gameManager = FindObjectOfType<UnserializableGameManager>();
         controller = GetComponent<CharacterController>();
         speed = walkSpeed;
         rayDistance = controller.height * .5f + controller.radius;
         slideLimit = controller.slopeLimit - .1f;
-       
+
     }
 
 
@@ -50,16 +50,13 @@ public class PlayerController : Bolt.EntityBehaviour<IPlayerState>
         grounded = (controller.Move(moveDirection * Time.deltaTime) & CollisionFlags.Below) != 0;
         if (toggleRun && grounded && Input.GetButtonDown("Run"))
             speed = (speed == walkSpeed ? runSpeed : walkSpeed);
+        Move();
         Jump();
         IsSliding();
     }
 
-    public override void Attached()
-    {
-        state.SetTransforms(state.transform, transform);
-    }
 
-    public override void SimulateOwner()
+    public void Move()
     {
         float inputX = Input.GetAxis("Horizontal");
         float inputY = Input.GetAxis("Vertical");
