@@ -1,14 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Video;
 
 public class Wall : MonoBehaviour, Interactable
 {
    
    [SerializeField] private GlitchEffect glitchEffect;
    [SerializeField] private SineWave sineWave;
-   [SerializeField] private GameObject lighting;
    [SerializeField] private AudioClip lookAtAudio;
+   [SerializeField] private VideoPlayer journalVideo;
    private GameManager gameManager;
    private bool hasGlitched;
 
@@ -21,22 +22,21 @@ public class Wall : MonoBehaviour, Interactable
         if (!hasGlitched){
             gameManager.PlaySfx(lookAtAudio, false);
             gameManager.PlayMusic(1, false);
-            hasGlitched = true;
+            hasGlitched = true;          
             StartCoroutine(Effect());
+            
         }
     }
 
-    public void OnInteraction()
-    { 
-    
-    }
+   public void OnInteraction(){
 
-
+   }
 
     IEnumerator Effect(){
          glitchEffect.enabled = true;
          sineWave.enabled = true;
          yield return new WaitForSeconds(3);
+         journalVideo.Play();
          sineWave.enabled = false;
           glitchEffect.enabled = false;
     }

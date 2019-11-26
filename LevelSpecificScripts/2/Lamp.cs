@@ -7,7 +7,7 @@ public class Lamp : MonoBehaviour, Interactable
     [SerializeField] private AudioClip use;
     [SerializeField] private Light lamp;
     [SerializeField] private Material lampShade;
-    [SerializeField] private GameManager gameManager;
+    private GameManager gameManager;
 
     void Start(){
         gameManager = Object.FindObjectOfType<GameManager>();

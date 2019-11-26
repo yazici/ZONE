@@ -6,7 +6,7 @@ public class VolumeSetter : MonoBehaviour
 {
     private GameManager gameManager;
     private AudioSource audioSource;
-    private bool music;
+    [SerializeField] private bool music;
 
     void Start(){
         audioSource = GetComponent<AudioSource>();

@@ -20,6 +20,9 @@ public class MainMenu : MonoBehaviour
         gameManager = FindObjectOfType<GameManager>();   
         gameManager.gameState = GameManager.GameState.MainMenu;
         gameManager.PlayMusic(0, true);
+    }
+
+    private void setSliderValues(){
         musicSlider.value = PlayerPrefs.GetFloat("music");
         sfxSlider.value = PlayerPrefs.GetFloat("sfx");
         sensitivitySlider.value = PlayerPrefs.GetFloat("sensitivity");

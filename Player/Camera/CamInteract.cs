@@ -13,7 +13,7 @@ public class CamInteract : MonoBehaviour
         {
             if(hit.transform.tag == "Interactable")          
                 Interact();    
-            else
+            else if (hit.transform.tag == "Pickup")
                 Pickup();
         }
     } 

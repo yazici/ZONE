@@ -22,7 +22,8 @@ public class MouseLook : MonoBehaviour
     void Start()
     {
         gameManager = Object.FindObjectOfType<GameManager>();
-
+        sensitivity.x = gameManager.sensitivity;
+        sensitivity.y = gameManager.sensitivity;
         // Set target direction to the camera's initial orientation.
         targetDirection = transform.localRotation.eulerAngles;
 

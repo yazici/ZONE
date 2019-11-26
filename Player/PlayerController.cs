@@ -4,22 +4,17 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] private float walkSpeed = 6.0f;
+[SerializeField] private float walkSpeed = 6.0f;
     [SerializeField] private float runSpeed = 11.0f;
-    [Tooltip("If true, diagonal speed (when strafing + moving forward or back) can't exceed normal move speed; otherwise it's about 1.4 times faster.")]
     [SerializeField] private bool limitDiagonalSpeed = true;
     [SerializeField] private bool toggleRun = false;
     [SerializeField] private float jumpSpeed = 8.0f;
     [SerializeField] private float gravity = 20.0f;
-    [Tooltip("If the player ends up on a slope which is at least the Slope Limit as set on the character controller, then he will slide down.")]
     [SerializeField] private bool slideWhenOverSlopeLimit = false;
     [SerializeField] private bool slideOnTaggedObjects = false;
     [SerializeField] private float slideSpeed = 12.0f;
     [SerializeField] private bool airControl = false;
-    [Tooltip("Small amounts of this results in bumping when walking down slopes, but large amounts results in falling too fast.")]
     [SerializeField] private float antiBumpFactor = .75f;
-    [Tooltip("Player must be grounded for at least this many physics frames before being able to jump again; set to 0 to allow bunny hopping.")]
-    [SerializeField] private int antiBunnyHopFactor = 1;
 
     private Vector3 moveDirection = Vector3.zero;
     private bool grounded = false;
@@ -32,16 +27,17 @@ public class PlayerController : MonoBehaviour
     private bool playerControl = false;
     private bool sliding;
     private GameManager gameManager;
+    private AudioSource walkingSource;
 
 
     private void Start()
     {
         gameManager = FindObjectOfType<GameManager>();
-        controller = GetComponent<CharacterController>();
-        
+        controller = GetComponent<CharacterController>(); 
         speed = walkSpeed;
         rayDistance = controller.height * .5f + controller.radius;
         slideLimit = controller.slopeLimit - .1f;
+        walkingSource = GetComponent<AudioSource>();
 
     }
 
@@ -50,10 +46,11 @@ public class PlayerController : MonoBehaviour
     {
         grounded = (controller.Move(moveDirection * Time.deltaTime) & CollisionFlags.Below) != 0;
             speed = Input.GetKey(KeyCode.LeftShift) && grounded ? runSpeed : walkSpeed;
+        IsSliding();    
         Move();
         Jump();
-        IsSliding();
     }
+
 
 
     public void Move()
@@ -63,10 +60,12 @@ public class PlayerController : MonoBehaviour
         float inputModifyFactor = (inputX != 0.0f && inputY != 0.0f && limitDiagonalSpeed) ? .7071f : 1.0f;
         if (grounded)
         {
-            if ((sliding && slideWhenOverSlopeLimit) || (slideOnTaggedObjects && hit.collider.tag == "Slide"))
+            if (sliding && slideWhenOverSlopeLimit || slideOnTaggedObjects && hit.collider.tag == "Slide")
                 Slide();
-            else
+            else{
                 PlayerControl(inputX, inputY, inputModifyFactor);
+            
+            }
         }
         else
             if (airControl && playerControl)
@@ -121,4 +120,13 @@ public class PlayerController : MonoBehaviour
     {
         contactPoint = hit.point;
     }
+    
+    /*
+  private void Slide(){
+        if (!grounded) {
+            moveDirection.x += (1f - hitNormal.y) * hitNormal.x * (speed - slideFriction);
+            moveDirection.z += (1f - hitNormal.y) * hitNormal.z * (speed - slideFriction);
+        }
+    }
+    */
 }

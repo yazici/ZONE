@@ -8,27 +8,28 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-    public List<string> inventory = new List<string>();
-    public enum GameState {Preload, Loading, Paused, Play, MainMenu}
     [Header("Loading")]
     public bool loadingScreenVanishAfterLoad;
     [SerializeField] private List<string> sceneNames;
     [SerializeField] int sceneIndex;
     [SerializeField] private GameObject loadingCanvas;
     [SerializeField] private Slider sunSlider;
-
     [Header("Game State")]
-    public GameState gameState; 
     public bool dev;
+    public GameState gameState; 
+    public enum GameState {Preload, Loading, Paused, Play, MainMenu} 
     [Header("Gameplay Settings")]
+    [SerializeField] private Text subtitles;
+    public List<string> inventory = new List<string>();
     public AudioSource globalSfxSource;
     public AudioSource musicSource;
     public AudioClip[] musicClips;
-    public Vector2 mouseSensivity;
     [Range(0, 1)]
     public float sfxVolume;
     [Range(0, 1)]
     public float musicVolume;
+    [Range(0, 1)]
+    public float sensitivity;
    
 
     void Start()
@@ -40,6 +41,8 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         PlayOrPause();
+        if (Input.GetKeyDown(KeyCode.Escape))
+            Application.Quit();
     }
 
     public void LoadSave()
@@ -52,15 +55,17 @@ public class GameManager : MonoBehaviour
 
     public void LoadSettings()
     {
-        if (!dev)
+        if (!dev && PlayerPrefs.HasKey("music"))
         {
             musicSource.volume = PlayerPrefs.GetFloat("music");
             globalSfxSource.volume = PlayerPrefs.GetFloat("sfx");
-            mouseSensivity.x = PlayerPrefs.GetFloat("sensitivity");
-            mouseSensivity.y = PlayerPrefs.GetFloat("sensitivity");
+            sensitivity = PlayerPrefs.GetFloat("sensitivity");      
         }
-        else
-            throw new System.Exception("Settings cannot be loaded in dev mode!");
+        else{
+            musicSource.volume = musicVolume;
+            globalSfxSource.volume = sfxVolume;      
+        }
+            
     }
 
 
@@ -117,5 +122,17 @@ public class GameManager : MonoBehaviour
     private void Load(string scene)
     {   
         StartCoroutine(LoadNewScene(scene));
+    }
+
+    public void DisplaySubtitle(string text)
+    {   
+        StartCoroutine(DisplayText(text));
+    }
+
+     IEnumerator DisplayText(string text){
+         subtitles.enabled = true;
+         subtitles.text = text;
+         yield return new WaitForSeconds(5);
+         subtitles.enabled = false;
     }
 }
